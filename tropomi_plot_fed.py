@@ -160,7 +160,7 @@ def get_data(f, field, filters):
     return var,latb,lonb,extended_name, unit
 
 def plot_variable(file_list,variable2plot):
-    map = Basemap(projection='merc',llcrnrlat=44.,urcrnrlat=58.447,\
+    map = Basemap(projection='merc',llcrnrlat=44.,urcrnrlat=58.447,
     llcrnrlon=-10.,urcrnrlon=18.,resolution='l')   #Paris: lat = 48.5 - 52, lon = 1 - 4.5
 
 #59 , -10
