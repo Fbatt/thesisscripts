@@ -159,17 +159,9 @@ def get_data(f, field, filters):
     
     return var,latb,lonb,extended_name, unit
 
-latlon_Europe = [[30.0, 58.0],
-                 [-15.0,20.0]]
-latlon_World = [[-60.0, 75.0],
-                 [-180.,180.0]]
-latlon_Paris = [[44.0,58.447],
-               [-10.0,18.0]]
-corners = latlon_World
-
 def plot_variable(file_list,variable2plot):
-    map = Basemap(projection='merc',llcrnrlat=corners[0][0],urcrnrlat=corners[0][1],
-    llcrnrlon=corners[1][0],urcrnrlon=corners[1][1],resolution='l')   #Paris: lat = 48.5 - 52, lon = 1 - 4.5
+    map = Basemap(projection='merc',llcrnrlat=44.,urcrnrlat=58.447,\
+    llcrnrlon=-10.,urcrnrlon=18.,resolution='l')   #Paris: lat = 48.5 - 52, lon = 1 - 4.5
 
 #59 , -10
 #44 , 18
@@ -178,12 +170,11 @@ def plot_variable(file_list,variable2plot):
     map.drawcoastlines(linewidth=0.6, color = 'black')
     map.drawcountries(linewidth = 0.6, color = 'black')
    
-    map.drawlsmask(ocean_color='white') #optional parameter: land_color='white'
-    
+    map.drawlsmask(land_color='white',ocean_color='white')
 
     # draw lat/lon grid lines every x degrees.
-    map.drawparallels(np.arange( -90.,90.,10.),linewidth=0.1,color = 'Black',labels=[1,0,0,0])
-    map.drawmeridians(np.arange(-180.,180.,20.),linewidth=0.1,color = 'Black',labels=[0,0,0,1])
+    map.drawparallels(np.arange( -90.,90.,1.),linewidth=0.1,color = 'Black',labels=[1,0,0,0])
+    map.drawmeridians(np.arange(-180.,180.,1.),linewidth=0.1,color = 'Black',labels=[0,0,0,1])
    
     cmap = cm.get_cmap(name='rainbow')   #NO2: 'rainbow'   clouds: 'Blues_r'
     cmap.set_under('white')
@@ -200,7 +191,7 @@ def plot_variable(file_list,variable2plot):
                'cloud_radiance_fraction_nitrogendioxide_window < 0.5',
                'surface_albedo < 0.3',
                'air_mass_factor_troposphere > 0.2'
-               ]
+]
 
     data = []
 
@@ -224,8 +215,7 @@ def plot_variable(file_list,variable2plot):
     for var, latb, lonb in data:
         x,y = map(lonb,latb)
         if xtrack_range is None:
-            #cs = map.pcolor(x,y,var,cmap=cmap,latlon=False,vmin=0, vmax=15)  #comment this special range out later
-            cs = map.pcolor(x,y,var,cmap=cmap,latlon=False,vmin=0, vmax=10e15)  #-10e15, vmax=20e15  #SET RANGE HERE
+            cs = map.pcolor(x,y,var,cmap=cmap,latlon=False,vmin=0, vmax=20e15)  #-10e15, vmax=20e15
         else:
                 # pcolormesh
             cs = map.pcolor(x[:,:],
@@ -237,8 +227,6 @@ def plot_variable(file_list,variable2plot):
 
     cbar = map.colorbar(cs,location='right',pad="12%", extend="both")
     cbar.set_label(unit)
-    
-    map.drawlsmask(land_color='white')
     
     # Label for the plot
     label = 'TROPOMI o00569 - 11-22-2017'
@@ -261,33 +249,11 @@ if __name__ == "__main__":
 # Path to file storage in CapeGrim
     path1 = '/home/WUR/batti002/test_ride/'
 
-    #F1 = path1 + 'S5P_NRTI_L2__NO2____20190326T114331_20190326T114831_07506_01_010202_20190326T121957.nc'
-    
-    #Repro files june 2018
-    
-    #F1 = path1 + 'S5P_RPRO_L2__NO2____20180610T110109_20180610T124437_03406_01_010202_20190208T122356.nc'
-    #F1 = path1 + 'S5P_RPRO_L2__NO2____20180611T122337_20180611T140705_03421_01_010202_20190208T155926.nc'
-    #F1 = path1 + 'S5P_RPRO_L2__NO2____20180612T120435_20180612T134803_03435_01_010202_20190208T204140.nc'
-    #F1 = path1 + 'S5P_RPRO_L2__NO2____20180613T114533_20180613T132900_03449_01_010202_20190208T235133.nc'
-    #Repro files august 2018
-    #europe
-    #F1 = path1 + 'S5P_RPRO_L2__NO2____20180803T104729_20180803T123037_04172_01_010202_20190216T142505.nc'
-    #F1 = path1 + 'S5P_RPRO_L2__NO2____20180804T102837_20180804T121132_04186_01_010202_20190216T193101.nc'
-    #F1 = path1 + 'S5P_RPRO_L2__NO2____20180805T115028_20180805T130003_04201_01_010202_20190216T205754.nc'
-    #F1 = path1 + 'S5P_RPRO_L2__NO2____20180806T113138_20180806T131450_04215_01_010202_20190216T222812.nc'
-    
-    #asia
-    #F2 = path1 + 'S5P_RPRO_L2__NO2____20180805T050429_20180805T064757_04197_01_010202_20190216T201123.nc'
-    
-    #experiment: combine two parts of european sea
-    F1 = path1 + 'S5P_RPRO_L2__NO2____20180806T094952_20180806T113320_04214_01_010202_20190216T222121.nc'
-    F2 = path1 + 'S5P_RPRO_L2__NO2____20180806T131252_20180806T145619_04216_01_010202_20190217T010134.nc'
-    F3 = path1 + 'S5P_RPRO_L2__NO2____20180806T113138_20180806T131450_04215_01_010202_20190216T222812.nc'
+    F1 = path1 + 'S5P_NRTI_L2__NO2____20190326T114331_20190326T114831_07506_01_010202_20190326T121957.nc'
+
     
     file_list = [F1]
-    
     variable2plot = 'nitrogendioxide_tropospheric_column'
-    #variable2plot = 'surface_classification'
     #variable2plot = 'cloud_radiance_fraction_nitrogendioxide_window'
     plot_variable(file_list,variable2plot)
 
