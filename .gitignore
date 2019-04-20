@@ -1,3 +1,4 @@
 *.png
 *.nc
 tropomi_plot_v02.py
+query_results.txt
